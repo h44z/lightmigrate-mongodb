@@ -40,9 +40,12 @@ type driver struct {
 	verbose bool
 }
 
+// DriverOption is a function that can be used within the driver constructor to
+// modify the driver object.
 type DriverOption func(svc *driver)
 
-func NewDriver(client *mongo.Client, database string, opts ...DriverOption) (*driver, error) {
+// NewDriver instantiates a new MongoDB driver. A MongoDB client and the database name are required arguments.
+func NewDriver(client *mongo.Client, database string, opts ...DriverOption) (lightmigrate.MigrationDriver, error) {
 	if database == "" {
 		return nil, ErrNoDatabaseName
 	}
@@ -77,30 +80,36 @@ func NewDriver(client *mongo.Client, database string, opts ...DriverOption) (*dr
 	return d, nil
 }
 
+// WithLogger sets the logging instance used by the driver.
 func WithLogger(logger lightmigrate.Logger) DriverOption {
 	return func(d *driver) {
 		d.logger = logger
 	}
 }
 
+// WithVerboseLogging sets the verbose flag of the driver.
 func WithVerboseLogging(verbose bool) DriverOption {
 	return func(d *driver) {
 		d.verbose = verbose
 	}
 }
 
+// WithMigrationCollection allows to specify the name of the collection that contains the migration state.
 func WithMigrationCollection(migrationCollection string) DriverOption {
 	return func(d *driver) {
 		d.cfg.MigrationsCollection = migrationCollection
 	}
 }
 
+// WithTransactions allows enabling or disabling MongoDB transactions for the migration process.
 func WithTransactions(transactions bool) DriverOption {
 	return func(d *driver) {
 		d.cfg.TransactionMode = transactions
 	}
 }
 
+// WithLocking can be used to configure the locking behaviour of the MongoDB migration driver.
+// See LockingConfig for details.
 func WithLocking(lockConfig LockingConfig) DriverOption {
 	return func(d *driver) {
 		if lockConfig.CollectionName == "" {

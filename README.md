@@ -1,6 +1,15 @@
 # LightMigrate - MongoDB migration driver
 
-This module is part of the [LightMigrate](github.com/h44z/lightmigrate) library.
+[![codecov](https://codecov.io/gh/h44z/lightmigrate-mongodb/branch/main/graph/badge.svg?token=N7H27SQUUW)](https://codecov.io/gh/h44z/lightmigrate-mongodb)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![GoDoc](https://pkg.go.dev/badge/github.com/h44z/lightmigrate-mongodb)](https://pkg.go.dev/github.com/h44z/lightmigrate-mongodb)
+![GitHub last commit](https://img.shields.io/github/last-commit/h44z/lightmigrate-mongodb)
+[![Go Report Card](https://goreportcard.com/badge/github.com/h44z/lightmigrate-mongodb)](https://goreportcard.com/report/github.com/h44z/lightmigrate-mongodb)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/h44z/lightmigrate-mongodb)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/h44z/lightmigrate-mongodb)
+[![GitHub Release](https://img.shields.io/github/release/h44z/lightmigrate-mongodb.svg)](https://github.com/h44z/lightmigrate-mongodb/releases)
+
+This module is part of the [LightMigrate](https://github.com/h44z/lightmigrate) library.
 It provides a migration driver for MongoDB.
 
 ## Features
