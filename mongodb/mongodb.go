@@ -50,6 +50,10 @@ func NewDriver(client *mongo.Client, database string, opts ...DriverOption) (lig
 		return nil, ErrNoDatabaseName
 	}
 
+	if client == nil {
+		return nil, ErrNoDatabaseClient
+	}
+
 	cfg := &config{
 		DatabaseName:         database,
 		MigrationsCollection: DefaultMigrationsCollection,

@@ -2,7 +2,7 @@
 
 [![codecov](https://codecov.io/gh/h44z/lightmigrate-mongodb/branch/main/graph/badge.svg?token=N7H27SQUUW)](https://codecov.io/gh/h44z/lightmigrate-mongodb)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![GoDoc](https://pkg.go.dev/badge/github.com/h44z/lightmigrate-mongodb)](https://pkg.go.dev/github.com/h44z/lightmigrate-mongodb)
+[![GoDoc](https://pkg.go.dev/badge/github.com/h44z/lightmigrate-mongodb/mongodb)](https://pkg.go.dev/github.com/h44z/lightmigrate-mongodb/mongodb)
 ![GitHub last commit](https://img.shields.io/github/last-commit/h44z/lightmigrate-mongodb)
 [![Go Report Card](https://goreportcard.com/badge/github.com/h44z/lightmigrate-mongodb)](https://goreportcard.com/report/github.com/h44z/lightmigrate-mongodb)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/h44z/lightmigrate-mongodb)
