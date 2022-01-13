@@ -18,8 +18,6 @@ jobs:
         run: |
           go version
           go get -u golang.org/x/lint/golint
-      - name: Build
-        run: go build .
 
       - name: Test With Coverage
         run: go test -gcflags=-l -v  -coverprofile=coverage.txt -covermode=atomic $(go list ./... | grep -v /examples)

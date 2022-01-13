@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	mongoClient, err := NewMongoClient("mongodb://user:secret@123.123.123.123:27017/", 10*time.Second)
+	mongoClient, err := newMongoClient("mongodb://user:secret@123.123.123.123:27017/", 10*time.Second)
 	if err != nil {
 		log.Fatalf("unable to setup mongodb client: %v", err)
 	}
@@ -47,7 +47,7 @@ func main() {
 	}
 }
 
-func NewMongoClient(url string, timeout time.Duration) (*mongo.Client, error) {
+func newMongoClient(url string, timeout time.Duration) (*mongo.Client, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI(url))
 	if err != nil {
 		return nil, err
