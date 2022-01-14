@@ -3,15 +3,16 @@ package mongodb
 import (
 	"context"
 	"fmt"
-	"github.com/h44z/lightmigrate"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"io"
 	"io/ioutil"
 	"os"
 	"sync/atomic"
 	"time"
+
+	"github.com/h44z/lightmigrate"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type versionInfo struct {
@@ -31,10 +32,10 @@ type lockFilter struct {
 }
 
 type driver struct {
-	client   *mongo.Client
-	cfg      *config
-	migDb    *mongo.Database // where migration info is stored
-	lockFlag int32           // must be accessed by atomic.XXX functions!
+	client            *mongo.Client
+	cfg               *config
+	migDb             *mongo.Database // where migration info is stored
+	reentrantLockFlag int32           // must be accessed by atomic.XXX functions!
 
 	logger  lightmigrate.Logger
 	verbose bool
@@ -128,7 +129,7 @@ func WithLocking(lockConfig LockingConfig) DriverOption {
 }
 
 func (d *driver) Close() error {
-	return nil // nothing to cleanup
+	return nil // nothing to clean up
 }
 
 // Lock utilizes advisory locking on the LockingConfig.CollectionName collection
@@ -139,7 +140,7 @@ func (d *driver) Lock() error {
 	}
 
 	// check if already locked, if not, lock
-	if !atomic.CompareAndSwapInt32(&d.lockFlag, 0, 1) {
+	if !atomic.CompareAndSwapInt32(&d.reentrantLockFlag, 0, 1) {
 		return nil // no swap happened, already locked
 	}
 
@@ -160,7 +161,7 @@ func (d *driver) Lock() error {
 	defer cancelFunc()
 	_, err = d.migDb.Collection(d.cfg.Locking.CollectionName).InsertOne(ctx, newLockObj)
 	if err != nil {
-		atomic.StoreInt32(&d.lockFlag, 0) // restore unlock flag
+		atomic.StoreInt32(&d.reentrantLockFlag, 0) // restore unlock flag
 		return ErrDatabaseLocked
 	}
 
@@ -173,7 +174,7 @@ func (d *driver) Unlock() error {
 	}
 
 	// check if already unlocked, if not, unlock
-	if !atomic.CompareAndSwapInt32(&d.lockFlag, 1, 0) {
+	if !atomic.CompareAndSwapInt32(&d.reentrantLockFlag, 1, 0) {
 		return nil // no swap happened, already unlocked
 	}
 
@@ -185,7 +186,7 @@ func (d *driver) Unlock() error {
 	defer cancelFunc()
 	_, err := d.migDb.Collection(d.cfg.Locking.CollectionName).DeleteMany(ctx, filter)
 	if err != nil {
-		atomic.StoreInt32(&d.lockFlag, 1) // restore lock flag
+		atomic.StoreInt32(&d.reentrantLockFlag, 1) // restore lock flag
 		return err
 	}
 

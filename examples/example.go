@@ -2,14 +2,15 @@ package main
 
 import (
 	"context"
+	"log"
+	"os"
+	"time"
+
 	"github.com/h44z/lightmigrate"
 	"github.com/h44z/lightmigrate-mongodb/mongodb"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"log"
-	"os"
-	"time"
 )
 
 func main() {

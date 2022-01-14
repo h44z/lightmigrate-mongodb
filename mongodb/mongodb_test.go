@@ -191,7 +191,7 @@ func Test_driver_Lock(t *testing.T) {
 		}
 
 		// should be locked
-		if atomic.LoadInt32(&d.(*driver).lockFlag) != 1 {
+		if atomic.LoadInt32(&d.(*driver).reentrantLockFlag) != 1 {
 			t.Fatalf("not locked")
 		}
 	})
@@ -215,7 +215,7 @@ func Test_driver_Lock(t *testing.T) {
 		}
 
 		// should not be locked
-		if atomic.LoadInt32(&d.(*driver).lockFlag) != 0 {
+		if atomic.LoadInt32(&d.(*driver).reentrantLockFlag) != 0 {
 			t.Fatalf("unexpected lock")
 		}
 	})
@@ -229,20 +229,20 @@ func Test_driver_Lock_Disabled(t *testing.T) {
 	}
 
 	// should not be locked
-	if atomic.LoadInt32(&d.lockFlag) == 1 {
+	if atomic.LoadInt32(&d.reentrantLockFlag) == 1 {
 		t.Fatalf("unexpected lock")
 	}
 }
 
 func Test_driver_Lock_AlreadyLocked(t *testing.T) {
-	d := driver{cfg: &config{Locking: LockingConfig{Enabled: true}}, lockFlag: 1}
+	d := driver{cfg: &config{Locking: LockingConfig{Enabled: true}}, reentrantLockFlag: 1}
 	err := d.Lock()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
 	// should be locked
-	if atomic.LoadInt32(&d.lockFlag) != 1 {
+	if atomic.LoadInt32(&d.reentrantLockFlag) != 1 {
 		t.Fatalf("not locked")
 	}
 }
@@ -408,7 +408,7 @@ func Test_driver_Unlock(t *testing.T) {
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		d.(*driver).lockFlag = 1 // simulate locked driver
+		d.(*driver).reentrantLockFlag = 1 // simulate locked driver
 
 		mt.AddMockResponses(bson.D{{Key: "ok", Value: 1}, {Key: "acknowledged", Value: true}, {Key: "n", Value: 1}}) // n = 1 doc deleted
 
@@ -418,7 +418,7 @@ func Test_driver_Unlock(t *testing.T) {
 		}
 
 		// should not be locked
-		if atomic.LoadInt32(&d.(*driver).lockFlag) != 0 {
+		if atomic.LoadInt32(&d.(*driver).reentrantLockFlag) != 0 {
 			t.Fatalf("unexptected lock")
 		}
 	})
@@ -430,7 +430,7 @@ func Test_driver_Unlock(t *testing.T) {
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		d.(*driver).lockFlag = 1 // simulate locked driver
+		d.(*driver).reentrantLockFlag = 1 // simulate locked driver
 
 		mt.AddMockResponses(bson.D{{Key: "ok", Value: 0}, {Key: "acknowledged", Value: false}, {Key: "n", Value: 0}})
 
@@ -440,7 +440,7 @@ func Test_driver_Unlock(t *testing.T) {
 		}
 
 		// should still be locked
-		if atomic.LoadInt32(&d.(*driver).lockFlag) != 1 {
+		if atomic.LoadInt32(&d.(*driver).reentrantLockFlag) != 1 {
 			t.Fatalf("not locked")
 		}
 	})
@@ -454,20 +454,20 @@ func Test_driver_Unlock_Disabled(t *testing.T) {
 	}
 
 	// should not be locked
-	if atomic.LoadInt32(&d.lockFlag) != 0 {
+	if atomic.LoadInt32(&d.reentrantLockFlag) != 0 {
 		t.Fatalf("unexptected lock")
 	}
 }
 
 func Test_driver_Unlock_AlreadyUnlocked(t *testing.T) {
-	d := driver{cfg: &config{Locking: LockingConfig{Enabled: true}}, lockFlag: 0}
+	d := driver{cfg: &config{Locking: LockingConfig{Enabled: true}}, reentrantLockFlag: 0}
 	err := d.Unlock()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
 	// should not be locked
-	if atomic.LoadInt32(&d.lockFlag) != 0 {
+	if atomic.LoadInt32(&d.reentrantLockFlag) != 0 {
 		t.Fatalf("unexptected lock")
 	}
 }
