@@ -234,16 +234,12 @@ func (d *driver) RunMigration(migration io.Reader) error {
 		return fmt.Errorf("unmarshaling json error: %s", err)
 	}
 	if d.cfg.TransactionMode {
-		if err := d.executeCommandsWithTransaction(context.TODO(), cmds); err != nil {
-			return err
-		}
+		err = d.executeCommandsWithTransaction(context.TODO(), cmds)
 	} else {
-		if err := d.executeCommands(context.TODO(), cmds); err != nil {
-			return err
-		}
+		err = d.executeCommands(context.TODO(), cmds)
 	}
 
-	return nil
+	return err
 }
 
 func (d *driver) Reset() error {
