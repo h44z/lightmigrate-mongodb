@@ -138,9 +138,9 @@ func (d *driver) Lock() error {
 		return nil
 	}
 
-	// check if already locked
-	if atomic.LoadInt32(&d.lockFlag) == 1 {
-		return nil
+	// check if already locked, if not, lock
+	if !atomic.CompareAndSwapInt32(&d.lockFlag, 0, 1) {
+		return nil // no swap happened, already locked
 	}
 
 	pid := os.Getpid()
@@ -160,10 +160,9 @@ func (d *driver) Lock() error {
 	defer cancelFunc()
 	_, err = d.migDb.Collection(d.cfg.Locking.CollectionName).InsertOne(ctx, newLockObj)
 	if err != nil {
+		atomic.StoreInt32(&d.lockFlag, 0) // restore unlock flag
 		return ErrDatabaseLocked
 	}
-
-	atomic.StoreInt32(&d.lockFlag, 1)
 
 	return nil
 }
@@ -173,9 +172,9 @@ func (d *driver) Unlock() error {
 		return nil
 	}
 
-	// check if already unlocked
-	if atomic.LoadInt32(&d.lockFlag) == 0 {
-		return nil
+	// check if already unlocked, if not, unlock
+	if !atomic.CompareAndSwapInt32(&d.lockFlag, 1, 0) {
+		return nil // no swap happened, already unlocked
 	}
 
 	filter := lockFilter{
@@ -186,10 +185,9 @@ func (d *driver) Unlock() error {
 	defer cancelFunc()
 	_, err := d.migDb.Collection(d.cfg.Locking.CollectionName).DeleteMany(ctx, filter)
 	if err != nil {
+		atomic.StoreInt32(&d.lockFlag, 1) // restore lock flag
 		return err
 	}
-
-	atomic.StoreInt32(&d.lockFlag, 0)
 
 	return nil
 }
