@@ -1,6 +1,6 @@
 # LightMigrate - MongoDB migration driver
 
-[![codecov](https://codecov.io/gh/h44z/lightmigrate-mongodb/branch/main/graph/badge.svg?token=N7H27SQUUW)](https://codecov.io/gh/h44z/lightmigrate-mongodb)
+[![codecov](https://codecov.io/gh/h44z/lightmigrate-mongodb/branch/master/graph/badge.svg?token=N7H27SQUUW)](https://codecov.io/gh/h44z/lightmigrate-mongodb)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![GoDoc](https://pkg.go.dev/badge/github.com/h44z/lightmigrate-mongodb/mongodb)](https://pkg.go.dev/github.com/h44z/lightmigrate-mongodb/mongodb)
 ![GitHub last commit](https://img.shields.io/github/last-commit/h44z/lightmigrate-mongodb)
@@ -15,7 +15,7 @@ It provides a migration driver for MongoDB.
 ## Features
  * Driver work with mongo through [db.runCommands](https://docs.mongodb.com/manual/reference/command/)
  * Migrations support json format. It contains array of commands for `db.runCommand`. Every command is executed in separate request to the database. 
- * All keys have to be in quotes `"`
+ * All json keys have to be in quotes `"`
  * [Examples](./examples)
 
 ## Configuration Options
